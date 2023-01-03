@@ -6,7 +6,7 @@ var instance = axios.create({
 
 var xApiKey = process.env.REACT_APP_X_API_KEY
 
-const IncomeApi = {
+const ExpenseApi = {
 
     update: (accountUuid, payload) => {
 
@@ -16,8 +16,8 @@ const IncomeApi = {
                 'x-api-key': xApiKey
             }
         };
-        return instance.put('/incomes?accountUuid='+accountUuid, JSON.stringify(payload), options);
+        return instance.put('/expenses?accountUuid='+accountUuid, JSON.stringify(payload), options);
     }
 }
 
-export default IncomeApi;
+export default ExpenseApi;

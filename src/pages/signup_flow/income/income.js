@@ -4,6 +4,7 @@ import Header from "../../../layout/header";
 import Footer from "../../../layout/footer";
 import './income.css';
 import IncomeApi from "../../../api/IncomeApi";
+import IncomeGraphQL from "../../../graphql/IncomeGraphQL";
 import Auth from "../../../components/auth/auth";
 
 function SignUpIncome() {
@@ -25,10 +26,27 @@ function SignUpIncome() {
     }]);
 
     const [errorMsg, setErrorMsg] = useState("");
-    const [auth, setAuth] = useState(Auth.getAuth());
+    const [auth, setAuth] = useState({});
 
     useEffect(() => {
         console.log("SignUpIncome")
+
+        setAuth(Auth.getAuth())
+
+        IncomeGraphQL.getIncomes()
+        .then((response) => {
+            // console.log("response: ", response);
+            let savedIncomes = response.data.data.incomes
+            console.log("savedIncomes: ", savedIncomes);
+
+            if(savedIncomes.length > 0){
+                setIncomes(savedIncomes)
+            }
+            
+        }).catch((error) => {
+            console.error("Error: ", error);
+        });
+
         // signUpWithEmailAndPassword()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -47,7 +65,7 @@ function SignUpIncome() {
         setIncomes(currentIncomes);
     };
 
-    const updateIncome = () => {
+    const update = () => {
         let incomeInfo = [...incomes]
 
         IncomeApi.update(auth.accountUuid, incomeInfo)
@@ -86,12 +104,13 @@ function SignUpIncome() {
             if(index!==i){
                 return true
             }
+            return false
         });
         setIncomes(currentIncomes);
     }
 
     const goBack = () => {
-        navigate('/signup/goals')
+        navigate('/signup/profile')
     }
 
     return (
@@ -100,7 +119,7 @@ function SignUpIncome() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h1>Profile</h1>
+                        <h2>Your Income</h2>
                         
                         {errorMsg && 
                             <div className="row">
@@ -123,7 +142,7 @@ function SignUpIncome() {
                                                         <input 
                                                         id="companyName"
                                                         name="companyName"
-                                                        value={income.companyName}
+                                                        value={income.companyName || ''}
                                                         onChange={(e)=>handleUserInputChange(e,index)}
                                                         required
                                                         className="form-control" 
@@ -137,7 +156,7 @@ function SignUpIncome() {
                                                         id="payPeriodNetAmount"
                                                         name="payPeriodNetAmount"
                                                         type="number"
-                                                        value={income.payPeriodNetAmount}
+                                                        value={income.payPeriodNetAmount || ''}
                                                         onChange={(e)=>handleUserInputChange(e,index)}
                                                         required
                                                         className="form-control" 
@@ -150,7 +169,7 @@ function SignUpIncome() {
                                                         <label  className="form-label">Pay Period Type</label>
                                                         <select 
                                                             name="payPeriod"
-                                                            value={income.payPeriod} 
+                                                            value={income.payPeriod || ''} 
                                                             onChange={(e)=>handleUserInputChange(e,index)}
                                                             className="form-select" 
                                                             aria-label="Default select example">
@@ -168,7 +187,7 @@ function SignUpIncome() {
                                                         <label  className="form-label">Pay Type</label>
                                                         <select 
                                                             name="payType"
-                                                            value={income.payType} 
+                                                            value={income.payType || ''} 
                                                             onChange={(e)=>handleUserInputChange(e,index)}
                                                             className="form-select" 
                                                             aria-label="Default select example">
@@ -184,7 +203,7 @@ function SignUpIncome() {
                                                         <input 
                                                         id="yourPosition"
                                                         name="position"
-                                                        value={income.position}
+                                                        value={income.position || ''}
                                                         onChange={(e)=>handleUserInputChange(e,index)}
                                                         required
                                                         className="form-control" 
@@ -198,7 +217,7 @@ function SignUpIncome() {
                                                         id="nextPayDay"
                                                         name="nextPayDay"
                                                         type="date"
-                                                        value={income.nextPayDay}
+                                                        value={income.nextPayDay || ''}
                                                         onChange={(e)=>handleUserInputChange(e,index)}
                                                         required
                                                         className="form-control" 
@@ -206,7 +225,7 @@ function SignUpIncome() {
                                                     </div>
                                                 </div>
                                                 {
-                                                    (index != incomes.length-1) &&
+                                                    (index !== incomes.length-1) &&
                                                     <div className="col-sm-1 col-1">
                                                         <div className="mt-4 addRemoveBtn">
                                                             <button onClick={()=>remove(index)} type="button" className="btn btn-danger">-</button>
@@ -214,7 +233,7 @@ function SignUpIncome() {
                                                     </div>
                                                 }
                                                 {
-                                                    (index == incomes.length-1 && incomes.length <= 4) &&
+                                                    (index === incomes.length-1 && incomes.length <= 4) &&
                                                     <div className="col-sm-1 col-1">
                                                         <div className="mt-4 addRemoveBtn">
                                                             <button onClick={()=>add()} type="button" className="btn btn-primary">+</button>
@@ -236,7 +255,7 @@ function SignUpIncome() {
                             </div>
                             <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>updateIncome()} type="button" className="btn btn-primary float-right">Save</button>
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
                                 </div>
                             </div>
                         </div>

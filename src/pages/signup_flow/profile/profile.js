@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Header from "../../../layout/header";
 import Footer from "../../../layout/footer";
 import UserApi from "../../../api/UserApi";
+import UserGraphQL from "../../../graphql/UserGraphQL";
 import Auth from "../../../components/auth/auth";
 
 function SignUpProfile() {
@@ -35,11 +36,19 @@ function SignUpProfile() {
 
     useEffect(() => {
         console.log("SignUpProfile")
-        let auth = Auth.getAuth()
-        console.log(auth)
-        setUser({
-            ...user,
-            ['uuid']: auth.uuid,
+        UserGraphQL.getProfile()
+        .then((response) => {
+            let savedProfile = response?.data?.data['users'][0]
+            console.log("savedProfile: ", savedProfile);
+
+            setUser(savedProfile)
+
+            let savedAddress = savedProfile.account.address
+
+            setAddress(savedAddress)
+
+        }).catch((error) => {
+            console.error("Error: ", error);
         });
         // signUpWithEmailAndPassword()
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,9 +67,7 @@ function SignUpProfile() {
         });
     };
 
-    const updateProfile = () => {
-        console.log(user)
-        console.log(address)
+    const update = () => {
         let userInfo = user
         userInfo['account']['address'] = address
 
@@ -70,6 +77,7 @@ function SignUpProfile() {
             navigate("/signup/income");
         }).catch((error) => {
             console.error("Error: ", error);
+            setErrorMsg(error)
         });
     }
 
@@ -79,7 +87,7 @@ function SignUpProfile() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h1>Profile</h1>
+                        <h2>Your Profile</h2>
                         
                         {errorMsg && 
                             <div className="row">
@@ -90,7 +98,7 @@ function SignUpProfile() {
                                 </div>
                             </div>
                         }
-                        <h3>Personal Info</h3>
+                        <h4>Personal Info</h4>
                         <div className="row">
                             <div className="col-sm-6 col-12">
                                 <div className="mb-3">
@@ -100,7 +108,7 @@ function SignUpProfile() {
                                     name="firstName"
                                     type="text"
                                     autoComplete="firstname"
-                                    value={user.firstName}
+                                    value={user.firstName || ''}
                                     onChange={handleUserInputChange}
                                     required
                                     className="form-control" 
@@ -114,7 +122,7 @@ function SignUpProfile() {
                                     id="lastName"
                                     name="lastName"
                                     autoComplete="lastName"
-                                    value={user.lastName}
+                                    value={user.lastName || ''}
                                     onChange={handleUserInputChange}
                                     required
                                     className="form-control" 
@@ -145,7 +153,7 @@ function SignUpProfile() {
                                     id="phoneNumber"
                                     name="phoneNumber"
                                     autoComplete="phoneNumber"
-                                    value={user.phoneNumber}
+                                    value={user.phoneNumber || ''}
                                     onChange={handleUserInputChange}
                                     required
                                     className="form-control" 
@@ -154,7 +162,7 @@ function SignUpProfile() {
                             </div>
                         </div>
                         <hr/>
-                        <h3>Address</h3>
+                        <h4>Address</h4>
                         <div className="row">
                             <div className="col-sm-6 col-12">
                                 <div className="mb-3">
@@ -163,7 +171,7 @@ function SignUpProfile() {
                                     id="street"
                                     name="street"
                                     autoComplete="street"
-                                    value={address.street}
+                                    value={address.street || ''}
                                     onChange={handleAddressInputChange}
                                     required
                                     className="form-control" 
@@ -177,7 +185,7 @@ function SignUpProfile() {
                                     id="street2"
                                     name="street2"
                                     autoComplete="street2"
-                                    value={address.street2}
+                                    value={address.street2 || ''}
                                     onChange={handleAddressInputChange}
                                     required
                                     className="form-control" 
@@ -193,7 +201,7 @@ function SignUpProfile() {
                                     id="city"
                                     name="city"
                                     autoComplete="city"
-                                    value={address.city}
+                                    value={address.city || ''}
                                     onChange={handleAddressInputChange}
                                     required
                                     className="form-control" 
@@ -207,7 +215,7 @@ function SignUpProfile() {
                                     id="state"
                                     name="state"
                                     autoComplete="state"
-                                    value={address.state}
+                                    value={address.state || ''}
                                     onChange={handleAddressInputChange}
                                     required
                                     className="form-control" 
@@ -221,7 +229,7 @@ function SignUpProfile() {
                                     id="zipcode"
                                     name="zipcode"
                                     autoComplete="zipcode"
-                                    value={address.zipcode}
+                                    value={address.zipcode || ''}
                                     onChange={handleAddressInputChange}
                                     required
                                     className="form-control" 
@@ -229,10 +237,10 @@ function SignUpProfile() {
                                 </div>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="col-12">
+                        <div className="row mt-5">
+                            <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>updateProfile()} type="button" className="btn btn-primary">Save</button>
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
                                 </div>
                             </div>
                         </div>

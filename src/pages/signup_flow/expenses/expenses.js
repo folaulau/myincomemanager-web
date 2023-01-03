@@ -1,76 +1,107 @@
 import { useState , useEffect} from "react";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../../../layout/header";
 import Footer from "../../../layout/footer";
-import UserApi from "../../../api/UserApi";
+import ExpenseApi from "../../../api/ExpenseApi";
+import ExpenseGraphQL from "../../../graphql/ExpenseGraphQL";
 import Auth from "../../../components/auth/auth";
 
 function SignUpExpenses() {
 
-    // let navigate = useNavigate();
+    let navigate = useNavigate();
 
-    const [user, setUser] = useState({
-        uuid: Auth.getAuth()['uuid'],
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        account: {
-            address: {}
-        }
-    });
-    const [address, setAddress] = useState({
-        street: "",
-        street2: "",
-        city: "",
-        zipcode: "",
-        state: "",
-        country: "",
-        longitude: 0,
-        latitude: 0,
-        timezone: ""
-    });
+    const [expenses, setExpenses] = useState([{
+        id: 0,
+        uuid: "",
+        type: "",
+        name: "",
+        amount: 0,
+        monthlyDueDay: 1
+    }]);
 
     const [errorMsg, setErrorMsg] = useState("");
 
+    const [auth, setAuth] = useState({});
+
     useEffect(() => {
         console.log("SignUpExpenses")
-        let auth = Auth.getAuth()
-        console.log(auth)
-        setUser({
-            ...user,
-            ['uuid']: auth.uuid,
+
+        setAuth(Auth.getAuth())
+        
+        ExpenseGraphQL.getExpenses()
+        .then((response) => {
+            // console.log("response: ", response);
+            let savedExpenses = response.data.data.expenses
+            console.log("savedExpenses: ", savedExpenses);
+
+            if(savedExpenses.length > 0){
+                setExpenses(savedExpenses)
+            }
+            
+        }).catch((error) => {
+            console.error("Error: ", error);
         });
         // signUpWithEmailAndPassword()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleUserInputChange = (e) => {
-        setUser({
-        ...user,
-        [e.target.name]: e.target.value,
-        });
-    };
-    const handleAddressInputChange = (e) => {
-        setAddress({
-        ...address,
-        [e.target.name]: e.target.value,
-        });
+    const handleInputChange = (e, index) => {
+        let name = e.target.name;
+        let value = e.target.value;
+        console.log("name: "+name)
+        console.log("value: "+value)
+        console.log("index: "+index)
+        let currentExpenses = [...expenses]
+
+        let expense = currentExpenses[index]
+        expense[name] = value
+        currentExpenses[index] = expense
+        setExpenses(currentExpenses);
     };
 
-    const updateProfile = () => {
-        console.log(user)
-        console.log(address)
-        let userInfo = user
-        userInfo['account']['address'] = address
+    const update = () => {
+        let expenseInfo = [...expenses]
 
-        UserApi.updateProfile(userInfo)
+        ExpenseApi.update(auth.accountUuid, expenseInfo)
         .then((response) => {
             console.log("response: ", response);
+            navigate('/dashboard')
             
         }).catch((error) => {
             console.error("Error: ", error);
+            setErrorMsg(error)
         });
+    }
+
+    const add = () => {
+        let currentExpenses = [...expenses]
+        currentExpenses.push({
+            id: 0,
+            uuid: "",
+            type: "",
+            name: "",
+            amount: 0,
+            monthlyDueDay: 1
+        })
+        setExpenses(currentExpenses);
+    }
+
+    const remove = (index) => {
+        console.log("remove expense at index: "+index)
+        let currentExpenses = [...expenses]
+
+        currentExpenses = currentExpenses.filter((expense, i) => {
+            if(index!==i){
+                return true
+            }
+            return false
+        });
+
+        setExpenses(currentExpenses);
+    }
+
+    const goBack = () => {
+        navigate('/signup/goals')
     }
 
     return (
@@ -79,7 +110,7 @@ function SignUpExpenses() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h1>Profile</h1>
+                        <h2>Your Expenses</h2>
                         
                         {errorMsg && 
                             <div className="row">
@@ -90,149 +121,113 @@ function SignUpExpenses() {
                                 </div>
                             </div>
                         }
-                        <h3>Personal Info</h3>
-                        <div className="row">
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">First Name</label>
-                                    <input 
-                                    id="firstName"
-                                    name="firstName"
-                                    type="text"
-                                    autoComplete="firstname"
-                                    value={user.firstName}
-                                    onChange={handleUserInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="John"/>
+                        {expenses.map((expense, index) => (
+                            <div className="row" key={index}>
+                                <div className="col-sm-4 col-12">
+                                    <div className="mb-3">
+                                        <label  className="form-label">Name</label>
+                                        <input 
+                                        id="name"
+                                        name="name"
+                                        value={expense.name}
+                                        onChange={(e)=>handleInputChange(e,index)}
+                                        required
+                                        className="form-control" 
+                                        placeholder="Water Bill"/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Last Name</label>
-                                    <input 
-                                    id="lastName"
-                                    name="lastName"
-                                    autoComplete="lastName"
-                                    value={user.lastName}
-                                    onChange={handleUserInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="Doe"/>
+                                <div className="col-sm-4 col-12">
+                                    <div className="mb-3">
+                                        <label  className="form-label">Category</label>
+                                        <select 
+                                            name="type"
+                                            value={expense.type || ''} 
+                                            onChange={(e)=>handleInputChange(e,index)}
+                                            className="form-select" 
+                                            aria-label="Default select">
+                                            <option value=""></option>
+                                            <option value="GROCERIES">Groceries</option>
+                                            <option value="HOUSING">Housing</option>
+                                            <option value="UTILITY">Utility</option>
+                                            <option value="INSURANCE">Insurance</option>
+                                            <option value="ENTERTAINMENT">Entertainment</option>
+                                            <option value="DONATION">Donation</option>
+                                            <option value="TITHING_DONATION">Tithing</option>
+                                            <option value="TRANSPORTATION">Transportation</option>
+                                            <option value="HOUSE_SUPPLIES">House Supplies</option>
+                                            <option value="CAR_MAINTENANCE">Vehicle</option>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Email</label>
-                                    <input 
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    autoComplete="email"
-                                    value={user.email}
-                                    onChange={handleUserInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="johndoe@gmail.com"/>
+                                <div className="col-sm-3 col-12">
+                                    <div className="mb-3">
+                                        <label  className="form-label">Monthly Due Day</label>
+                                        <select 
+                                            name="monthlyDueDay"
+                                            value={expense.monthlyDueDay || 1} 
+                                            onChange={(e)=>handleInputChange(e,index)}
+                                            className="form-select" 
+                                            aria-label="Default select">
+                                            <option value=""></option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                            <option value="7">7</option>
+                                            <option value="8">8</option>
+                                            <option value="9">9</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                            <option value="13">13</option>
+                                            <option value="14">14</option>
+                                            <option value="15">15</option>
+                                            <option value="16">16</option>
+                                            <option value="17">17</option>
+                                            <option value="18">18</option>
+                                            <option value="19">19</option>
+                                            <option value="20">20</option>
+                                            <option value="21">21</option>
+                                            <option value="22">22</option>
+                                            <option value="23">23</option>
+                                            <option value="24">24</option>
+                                            <option value="25">25</option>
+                                            <option value="26">26</option>
+                                            <option value="27">27</option>
+                                            <option value="28">28</option>
+                                        </select>
+                                    </div>
                                 </div>
+                                {
+                                    index !== expenses.length-1 &&
+                                    <div className="col-sm-1 col-2">
+                                        <div className="mt-4 addRemoveBtn">
+                                            <button onClick={()=>remove(index)} type="button" className="btn btn-danger">-</button>
+                                        </div>
+                                    </div>
+                                }
+                                {
+                                    (index === expenses.length-1 && expenses.length <= 4) &&
+                                    <div className="col-sm-1 col-2">
+                                        <div className="mt-4 addRemoveBtn">
+                                            <button onClick={()=>add()} type="button" className="btn btn-primary">+</button>
+                                        </div>
+                                    </div>
+                                }
+                                
                             </div>
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Phone Number</label>
-                                    <input 
-                                    id="phoneNumber"
-                                    name="phoneNumber"
-                                    autoComplete="phoneNumber"
-                                    value={user.phoneNumber}
-                                    onChange={handleUserInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="3101234567"/>
-                                </div>
-                            </div>
-                        </div>
-                        <hr/>
-                        <h3>Address</h3>
-                        <div className="row">
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Street</label>
-                                    <input 
-                                    id="street"
-                                    name="street"
-                                    autoComplete="street"
-                                    value={address.street}
-                                    onChange={handleAddressInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="123 rd"/>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Street 2</label>
-                                    <input 
-                                    id="street2"
-                                    name="street2"
-                                    autoComplete="street2"
-                                    value={address.street2}
-                                    onChange={handleAddressInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="#23"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-sm-3 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">City</label>
-                                    <input 
-                                    id="city"
-                                    name="city"
-                                    autoComplete="city"
-                                    value={address.city}
-                                    onChange={handleAddressInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="Lehi"/>
-                                </div>
-                            </div>
-                            <div className="col-sm-3 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">State</label>
-                                    <input 
-                                    id="state"
-                                    name="state"
-                                    autoComplete="state"
-                                    value={address.state}
-                                    onChange={handleAddressInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="UT"/>
-                                </div>
-                            </div>
-                            <div className="col-sm-6 col-12">
-                                <div className="mb-3">
-                                    <label  className="form-label">Zipcode</label>
-                                    <input 
-                                    id="zipcode"
-                                    name="zipcode"
-                                    autoComplete="zipcode"
-                                    value={address.zipcode}
-                                    onChange={handleAddressInputChange}
-                                    required
-                                    className="form-control" 
-                                    placeholder="80434"/>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col-12">
+                        ))}
+                        <div className="row mt-5">
+                            <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>updateProfile()} type="button" className="btn btn-primary">Save</button>
+                                    <button onClick={()=>goBack()} type="button" className="btn btn-primary float-left">Back</button>
+                                </div>
+                            </div>
+                            <div className="col-sm-2 col-6">
+                                <div className="d-grid gap-2">
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
                                 </div>
                             </div>
                         </div>

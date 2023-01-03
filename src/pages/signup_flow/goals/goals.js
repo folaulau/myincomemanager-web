@@ -2,8 +2,8 @@ import { useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../../layout/header";
 import Footer from "../../../layout/footer";
-import UserApi from "../../../api/UserApi";
 import GoalApi from "../../../api/GoalApi";
+import GoalGraphQL from "../../../graphql/GoalGraphQL";
 import Auth from "../../../components/auth/auth";
 
 function SignUpGoals() {
@@ -23,10 +23,26 @@ function SignUpGoals() {
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const [auth, setAuth] = useState(Auth.getAuth());
+    const [auth, setAuth] = useState({});
 
     useEffect(() => {
         console.log("SignUpGoals")
+
+        setAuth(Auth.getAuth())
+
+        GoalGraphQL.getGoals()
+        .then((response) => {
+            // console.log("response: ", response);
+            let savedGoals = response.data.data.goals
+            console.log("savedGoals: ", savedGoals);
+
+            if(savedGoals.length > 0){
+                setGoals(savedGoals)
+            }
+            
+        }).catch((error) => {
+            console.error("Error: ", error);
+        });
         // signUpWithEmailAndPassword()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -45,16 +61,17 @@ function SignUpGoals() {
         setGoals(currentGoals);
     };
 
-    const updateGoals = () => {
+    const update = () => {
         let userGoals = [...goals]
         
 
         GoalApi.update(auth.accountUuid, userGoals)
         .then((response) => {
             console.log("response: ", response);
-            navigate('/signup/goals')
+            navigate('/signup/expenses')
         }).catch((error) => {
             console.error("Error: ", error);
+            setErrorMsg(error)
         });
     }
 
@@ -79,10 +96,15 @@ function SignUpGoals() {
             if(index!==i){
                 return true
             }
+            return false
         });
 
         // currentGoals.splice(index,1);
         setGoals(currentGoals);
+    }
+
+    const goBack = () => {
+        navigate('/signup/income')
     }
 
     return (
@@ -91,7 +113,7 @@ function SignUpGoals() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h1>Goals</h1>
+                        <h2>Goals</h2>
                         
                         {errorMsg && 
                             <div className="row">
@@ -111,21 +133,21 @@ function SignUpGoals() {
                                         id="title"
                                         name="title"
                                         autoComplete="title"
-                                        value={goal.title}
+                                        value={goal.title || ''}
                                         onChange={(e)=>handleUserInputChange(e,index)}
                                         required
                                         className="form-control" 
                                         placeholder="Savings"/>
                                     </div>
                                 </div>
-                                <div className="col-sm-3 col-12">
+                                <div className="col-sm-4 col-12">
                                     <div className="mb-3">
                                         <label  className="form-label">Target Amount</label>
                                         <input 
                                         id="targetAmount"
                                         name="targetAmount"
                                         type="number"
-                                        value={goal.targetAmount}
+                                        value={goal.targetAmount || ''}
                                         onChange={(e)=>handleUserInputChange(e,index)}
                                         required
                                         className="form-control" 
@@ -139,7 +161,7 @@ function SignUpGoals() {
                                         id="deadline"
                                         name="deadline"
                                         type="date"
-                                        value={goal.deadline}
+                                        value={goal.deadline || ''}
                                         onChange={(e)=>handleUserInputChange(e,index)}
                                         required
                                         className="form-control" 
@@ -147,18 +169,18 @@ function SignUpGoals() {
                                     </div>
                                 </div>
                                 {
-                                    index != goals.length-1 &&
-                                    <div className="col-sm-2 col-2">
-                                        <div className="mt-4">
-                                            <button onClick={()=>removeGoal(index)} type="button" className="btn btn-danger">remove</button>
+                                    index !== goals.length-1 &&
+                                    <div className="col-sm-1 col-2">
+                                        <div className="mt-4 addRemoveBtn">
+                                            <button onClick={()=>removeGoal(index)} type="button" className="btn btn-danger">-</button>
                                         </div>
                                     </div>
                                 }
                                 {
-                                    (index == goals.length-1 && goals.length <= 4) &&
-                                    <div className="col-sm-2 col-2">
-                                        <div className="mt-4">
-                                            <button onClick={()=>addGoal()} type="button" className="btn btn-primary">add</button>
+                                    (index === goals.length-1 && goals.length <= 4) &&
+                                    <div className="col-sm-1 col-2">
+                                        <div className="mt-4 addRemoveBtn">
+                                            <button onClick={()=>addGoal()} type="button" className="btn btn-primary">+</button>
                                         </div>
                                     </div>
                                 }
@@ -166,10 +188,15 @@ function SignUpGoals() {
                             </div>
                         ))}
                         
-                        <div className="row">
-                            <div className="col-12">
+                        <div className="row mt-5">
+                            <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>updateGoals()} type="button" className="btn btn-primary">Save</button>
+                                    <button onClick={()=>goBack()} type="button" className="btn btn-primary float-left">Back</button>
+                                </div>
+                            </div>
+                            <div className="col-sm-2 col-6">
+                                <div className="d-grid gap-2">
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
                                 </div>
                             </div>
                         </div>

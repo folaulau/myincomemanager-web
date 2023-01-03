@@ -3,11 +3,13 @@ const AUTH = "auth"
 const Auth = {
 
     signIn: (auth: any) => {
+        localStorage.clear();
         localStorage.setItem(AUTH, JSON.stringify(auth));
         return true
     },
     signOut: () => {
-        localStorage.removeItem(AUTH)
+        localStorage.removeItem(AUTH);
+        localStorage.clear();
         return true
     },
     getAuth: () => {
