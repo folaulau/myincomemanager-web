@@ -10,7 +10,7 @@ import SignUpProfile from "./pages/signup_flow/profile/profile";
 import SignUpGoals from "./pages/signup_flow/goals/goals";
 import SignUpIncome from "./pages/signup_flow/income/income";
 import SignUpExpenses from "./pages/signup_flow/expenses/expenses";
-
+import Dashboard from "./pages/dashboard/dashboard";
 function AppRoutes() {
 
   // const [auth, setAuth] = useState({})
@@ -33,7 +33,7 @@ function AppRoutes() {
             <Route path="expenses" element={<SignUpExpenses />} />
           </Route>
           <Route path="*" element={<p>Page not found: 404!</p>} />
-
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </BrowserRouter>
     </>
