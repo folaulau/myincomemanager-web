@@ -191,12 +191,12 @@ function SignUpGoals() {
                         <div className="row mt-5">
                             <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>goBack()} type="button" className="btn btn-primary float-left">Back</button>
+                                    <button onClick={()=>goBack()} type="button" className="btn btn-outline-primary">Back</button>
                                 </div>
                             </div>
-                            <div className="col-sm-2 col-6">
+                            <div className="col-sm-2 offset-sm-8 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>

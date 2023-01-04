@@ -25,6 +25,7 @@ function SignUpIncome() {
         endDate: ""
     }]);
 
+    const [total, setTotal] = useState(1500);
     const [errorMsg, setErrorMsg] = useState("");
     const [auth, setAuth] = useState({});
 
@@ -63,6 +64,24 @@ function SignUpIncome() {
         income[name] = value
         currentIncomes[index] = income
         setIncomes(currentIncomes);
+
+        let count = currentIncomes.length;
+        let currentTotal = 0;
+        for (let i = 0; i < count; i++) {
+            try {
+                let num = parseFloat(currentIncomes[i].payPeriodNetAmount)
+                if(!isNaN(num)){
+                    currentTotal += num
+                }else{
+                    currentTotal += 0
+                }
+            }catch(err) {
+                currentTotal += 0
+            }
+        }
+        console.log("currentTotal: "+currentTotal)
+        console.log("currentTotal type: "+typeof currentTotal)
+        setTotal(parseFloat(currentTotal))
     };
 
     const update = () => {
@@ -119,7 +138,18 @@ function SignUpIncome() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h2>Your Income</h2>
+                        <div className="row">
+                            <div className="col-sm-10 col-12">
+                                <h2>Your Income</h2>
+                            </div>
+                            <div className="col-sm-2 col-12">
+                                <div className="row">
+                                    <div className="col-12 mt-1">
+                                        <span>Total</span> <span>${total.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         {errorMsg && 
                             <div className="row">
@@ -250,12 +280,12 @@ function SignUpIncome() {
                         <div className="row mt-5">
                             <div className="col-sm-2 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>goBack()} type="button" className="btn btn-primary float-left">Back</button>
+                                    <button onClick={()=>goBack()} type="button" className="btn btn-outline-primary">Back</button>
                                 </div>
                             </div>
-                            <div className="col-sm-2 col-6">
+                            <div className="col-sm-2 offset-sm-8 col-6">
                                 <div className="d-grid gap-2">
-                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>

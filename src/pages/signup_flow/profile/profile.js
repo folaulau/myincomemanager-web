@@ -238,9 +238,9 @@ function SignUpProfile() {
                             </div>
                         </div>
                         <div className="row mt-5">
-                            <div className="col-sm-2 col-6">
-                                <div className="d-grid gap-2">
-                                    <button onClick={()=>update()} type="button" className="btn btn-primary float-right">Save</button>
+                            <div className="col-sm-2 offset-sm-10 col-6">
+                                <div className="d-grid gap-2 float-right">
+                                    <button onClick={()=>update()} type="button" className="btn btn-primary">Save</button>
                                 </div>
                             </div>
                         </div>
