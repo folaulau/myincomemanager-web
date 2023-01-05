@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import PublicHeader from "../../layout/header_public";
 import PublicFooter from "../../layout/footer_public";
 import { useState , useEffect} from "react";
@@ -9,8 +10,10 @@ import './signin.css';
 
 function SignIn() {
 
+  let navigate = useNavigate();
+
   const [userInfo, setUserInfo] = useState({
-    email: "folaudev+"+Math.floor(Math.random() * 1000000000)+"@gmail.com",
+    email: "",
     password: "Test1234!"
   });
 
@@ -49,10 +52,12 @@ function SignIn() {
           UserApi.authenticate(authentication).then((response) => {
             console.log("response: ", response);
 
-            Auth.signIn(response.data);
+            let authData = response.data;
 
-            window.location.href = "/menu";
-            
+            Auth.signIn(authData);
+
+            findNextDestination(authData.signUpStatus)
+
           }).catch((error) => {
             console.error("Error: ", error);
             setErrorMsg(error.message)
@@ -64,6 +69,24 @@ function SignIn() {
         console.error("Error: ", error);
       });
   };
+
+  const findNextDestination = (signUpStatus: string) => {
+
+    if(signUpStatus==='SIGN_UP'){
+      navigate("/signup/profile");
+    }else if(signUpStatus==='PROFILE'){
+      navigate("/signup/income");
+    }else if(signUpStatus==='INCOME'){
+      navigate("/signup/goals");
+    }else if(signUpStatus==='GOAL'){
+      navigate("/signup/expenses");
+    }else if(signUpStatus==='EXPENSE'){
+      navigate("/dashboard");
+    }else {
+      navigate("/dashboard");
+    }
+
+  }
 
   const validate = (userInfo: any) => {
 
