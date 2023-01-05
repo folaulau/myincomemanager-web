@@ -14,7 +14,11 @@ function Transaction() {
 
   const [newTransactions, setNewTransactions] = useState([{
     name: "",
-    price: 0
+    price: 0,
+    quantity: 0,
+    total: 0,
+    datetime: "",
+    note: ""
   }]);
   const [editedTransaction, setEditedTransaction] = useState({});
 
@@ -121,17 +125,92 @@ function Transaction() {
               <div className="col-12">
                 {newTransactions.map((transaction, index) => (
                   <div key={index} className="row">
-                    <div className="col-sm-6 col-12">
-                      <div className="mb-3">
-                        <label  className="form-label">Name</label>
-                        <input 
-                        id="name"
-                        name="name"
-                        value={transaction.name}
-                        onChange={(e)=>handleNewTransactionsInputChange(e,index)}
-                        required
-                        className="form-control" 
-                        placeholder=""/>
+                    <div className="col-12">
+                      <div className="row">
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Name</label>
+                            <input 
+                            id="name"
+                            name="name"
+                            value={transaction.name}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Price</label>
+                            <input 
+                            id="price"
+                            name="price"
+                            value={transaction.price}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Quantity</label>
+                            <input 
+                            id="quantity"
+                            name="quantity"
+                            value={transaction.quantity}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Total</label>
+                            <input 
+                            id="price"
+                            name="price"
+                            readOnly
+                            value={transaction.total}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Date</label>
+                            <input 
+                            id="datetime"
+                            name="datetime"
+                            type="date"
+                            value={transaction.datetime}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
+                        <div className="col-sm-6 col-12">
+                          <div className="mb-3">
+                            <label  className="form-label">Note</label>
+                            <input 
+                            id="note"
+                            name="note"
+                            value={transaction.note}
+                            onChange={(e)=>handleNewTransactionsInputChange(e,index)}
+                            required
+                            className="form-control" 
+                            placeholder=""/>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
