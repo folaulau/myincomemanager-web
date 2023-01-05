@@ -14,7 +14,7 @@ function PublicHeader() {
                 className="d-flex align-items-center text-dark text-decoration-none"
                 >
                     {/* <img src={logo} alt="logo" /> */}
-                    <span className="fs-4">Income Manager</span>
+                    <span className="fs-4">My Income Manager</span>
                 </a>
 
                 <nav className="d-inline-flex mt-2 mt-md-0 ms-md-auto">

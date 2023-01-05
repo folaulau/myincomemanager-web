@@ -38,6 +38,7 @@ function SignUpProfile() {
         console.log("SignUpProfile")
         UserGraphQL.getProfile()
         .then((response) => {
+            // console.log("response: ", response);
             let savedProfile = response?.data?.data['users'][0]
             console.log("savedProfile: ", savedProfile);
 
@@ -50,7 +51,6 @@ function SignUpProfile() {
         }).catch((error) => {
             console.error("Error: ", error);
         });
-        // signUpWithEmailAndPassword()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

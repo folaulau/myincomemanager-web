@@ -22,7 +22,7 @@ function SignUpGoals() {
     }]);
 
     const [errorMsg, setErrorMsg] = useState("");
-
+    const [total, setTotal] = useState(0);
     const [auth, setAuth] = useState({});
 
     useEffect(() => {
@@ -33,11 +33,12 @@ function SignUpGoals() {
         GoalGraphQL.getGoals()
         .then((response) => {
             // console.log("response: ", response);
-            let savedGoals = response.data.data.goals
+            let savedGoals = response?.data?.data?.goals
             console.log("savedGoals: ", savedGoals);
 
             if(savedGoals.length > 0){
                 setGoals(savedGoals)
+                calculateTotal(savedGoals)
             }
             
         }).catch((error) => {
@@ -59,7 +60,27 @@ function SignUpGoals() {
         goal[name] = value
         currentGoals[index] = goal
         setGoals(currentGoals);
+
+        calculateTotal(currentGoals)
     };
+
+    const calculateTotal = (currentGoals) => {
+        let count = currentGoals.length;
+        let currentTotal = 0;
+        for (let i = 0; i < count; i++) {
+            try {
+                let num = parseFloat(currentGoals[i].targetAmount)
+                if(!isNaN(num)){
+                    currentTotal += num
+                }else{
+                    currentTotal += 0
+                }
+            }catch(err) {
+                currentTotal += 0
+            }
+        }
+        setTotal(parseFloat(currentTotal))
+    }
 
     const update = () => {
         let userGoals = [...goals]
@@ -113,7 +134,18 @@ function SignUpGoals() {
             <div className="container">
                 <div className="row">
                     <div className="col-md-8 offset-md-2">
-                        <h2>Goals</h2>
+                        <div className="row">
+                            <div className="col-sm-10 col-12">
+                                <h2>Your Goals</h2>
+                            </div>
+                            <div className="col-sm-2 col-12">
+                                <div className="row">
+                                    <div className="col-12 mt-1">
+                                        <span>Total</span> <span>${total.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
                         {errorMsg && 
                             <div className="row">

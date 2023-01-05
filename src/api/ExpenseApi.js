@@ -1,10 +1,11 @@
 import axios from 'axios';
+import Auth from '../components/auth/auth';
 
 var instance = axios.create({
     baseURL: process.env.REACT_APP_API_URL
 });
 
-var xApiKey = process.env.REACT_APP_X_API_KEY
+var authToken = Auth.getAuthToken()
 
 const ExpenseApi = {
 
@@ -13,7 +14,7 @@ const ExpenseApi = {
         const options = {
             headers: {
                 'Content-Type': 'application/json',
-                'x-api-key': xApiKey
+                'token': authToken
             }
         };
         return instance.put('/expenses?accountUuid='+accountUuid, JSON.stringify(payload), options);

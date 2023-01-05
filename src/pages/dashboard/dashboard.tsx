@@ -1,6 +1,5 @@
 import { useState , useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
 import Header from "../../layout/header";
 import Footer from "../../layout/footer";
 import FirebaseApi from "../../api/FirebaseApi";

@@ -36,6 +36,8 @@ function SignUpExpenses() {
 
             if(savedExpenses.length > 0){
                 setExpenses(savedExpenses)
+
+                calculateTotal(savedExpenses)
             }
             
         }).catch((error) => {
@@ -58,6 +60,11 @@ function SignUpExpenses() {
         currentExpenses[index] = expense
         setExpenses(currentExpenses);
 
+        calculateTotal(currentExpenses)
+        
+    };
+
+    const calculateTotal = (currentExpenses) => {
         let count = currentExpenses.length;
         let currentTotal = 0;
         for (let i = 0; i < count; i++) {
@@ -73,7 +80,7 @@ function SignUpExpenses() {
             }
         }
         setTotal(parseFloat(currentTotal))
-    };
+    }
 
     const update = () => {
         let expenseInfo = [...expenses]

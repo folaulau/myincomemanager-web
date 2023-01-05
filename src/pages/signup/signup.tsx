@@ -55,8 +55,11 @@ function SignUp() {
 
             Auth.signIn(response.data);
 
-            navigate("/signup/profile");
-            
+            // give 1 second to save auth into localStorage
+            setTimeout(()=>{
+              navigate("/signup/profile");
+            }, 1000);
+
           }).catch((error) => {
             console.error("Error: ", error);
             setErrorMsg(error.message)

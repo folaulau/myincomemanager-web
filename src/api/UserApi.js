@@ -6,7 +6,7 @@ var instance = axios.create({
 });
 
 var xApiKey = process.env.REACT_APP_X_API_KEY
-var user = Auth.getAuth()
+var authToken = Auth.getAuthToken()
 
 const UserApi = {
 
@@ -20,22 +20,12 @@ const UserApi = {
         };
         return instance.post('/users/authenticate', JSON.stringify(payload), options);
     },
-    getProfile: () => {
-
-        const options = {
-            headers: {
-                'Content-Type': 'application/json',
-                'token': user.token
-            }
-        };
-        return instance.get('/users/'+user.uuid, options);
-    },
     updateProfile: (payload) => {
 
         const options = {
             headers: {
                 'Content-Type': 'application/json',
-                'token': user.token
+                'token': authToken
             }
         };
         return instance.put('/users/profile', JSON.stringify(payload), options);

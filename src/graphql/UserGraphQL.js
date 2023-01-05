@@ -5,7 +5,7 @@ var instance = axios.create({
     baseURL: process.env.REACT_APP_GRAPHQL_URL
 });
 
-var auth = Auth.getAuth()
+var authToken = Auth.getAuthToken()
 
 const UserGraphQL = {
 
@@ -14,14 +14,14 @@ const UserGraphQL = {
             query MyQuery {
                 users {
                     id
-                    last_name
-                    first_name
-                    email
-                    phone_number
-                    status
-                    user_type
                     uuid
-                    third_party_name
+                    lastName: last_name
+                    firstName: first_name
+                    email
+                    phoneNumber: phone_number
+                    status
+                    type: user_type
+                    thirdPartyName: third_party_name
                     account {
                         address {
                             id
@@ -34,10 +34,10 @@ const UserGraphQL = {
                             longitude
                             latitude
                             timezone
-                            updated_at
+                            updatedAt: updated_at
                             primary_address
                             country
-                            created_at
+                            createdAt: created_at
                         }
                     }
                 }
@@ -48,7 +48,7 @@ const UserGraphQL = {
         var options = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer " + auth.token
+                'Authorization': "Bearer " + authToken
             }
         };
         return instance.post("", JSON.stringify(request), options);

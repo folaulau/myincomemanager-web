@@ -5,7 +5,7 @@ var instance = axios.create({
     baseURL: process.env.REACT_APP_GRAPHQL_URL
 });
 
-var auth = Auth.getAuth()
+var authToken = Auth.getAuthToken()
 
 const ExpenseGraphQL = {
 
@@ -29,7 +29,7 @@ const ExpenseGraphQL = {
         var options = {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': "Bearer " + auth.token
+                'Authorization': "Bearer " + authToken
             }
         };
         return instance.post("", JSON.stringify(request), options);
