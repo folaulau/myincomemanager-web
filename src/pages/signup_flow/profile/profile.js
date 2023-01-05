@@ -39,14 +39,19 @@ function SignUpProfile() {
         UserGraphQL.getProfile()
         .then((response) => {
             // console.log("response: ", response);
-            let savedProfile = response?.data?.data['users'][0]
-            console.log("savedProfile: ", savedProfile);
+            try {
+                let savedProfile = response?.data?.data['users'][0]
+                console.log("savedProfile: ", savedProfile);
 
-            setUser(savedProfile)
+                setUser(savedProfile)
 
-            let savedAddress = savedProfile.account.address
+                let savedAddress = savedProfile.account.address
 
-            setAddress(savedAddress)
+                setAddress(savedAddress)
+            }
+            catch(err) {
+            }
+            
 
         }).catch((error) => {
             console.error("Error: ", error);

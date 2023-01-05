@@ -51,9 +51,9 @@ function SignUpGoals() {
     const handleUserInputChange = (e, index) => {
         let name = e.target.name;
         let value = e.target.value;
-        console.log("name: "+name)
-        console.log("value: "+value)
-        console.log("index: "+index)
+        // console.log("name: "+name)
+        // console.log("value: "+value)
+        // console.log("index: "+index)
         let currentGoals = [...goals]
 
         let goal = currentGoals[index]
@@ -110,7 +110,7 @@ function SignUpGoals() {
     }
 
     const removeGoal = (index) => {
-        console.log("remove goal at index: "+index)
+        // console.log("remove goal at index: "+index)
         let currentGoals = [...goals]
 
         currentGoals = currentGoals.filter((goal, i) => {

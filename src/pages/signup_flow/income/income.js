@@ -55,9 +55,9 @@ function SignUpIncome() {
     const handleUserInputChange = (e, index) => {
         let name = e.target.name;
         let value = e.target.value;
-        console.log("name: "+name)
-        console.log("value: "+value)
-        console.log("index: "+index)
+        // console.log("name: "+name)
+        // console.log("value: "+value)
+        // console.log("index: "+index)
         let currentIncomes = [...incomes]
 
         let income = currentIncomes[index]
@@ -79,8 +79,8 @@ function SignUpIncome() {
                 currentTotal += 0
             }
         }
-        console.log("currentTotal: "+currentTotal)
-        console.log("currentTotal type: "+typeof currentTotal)
+        // console.log("currentTotal: "+currentTotal)
+        // console.log("currentTotal type: "+typeof currentTotal)
         setTotal(parseFloat(currentTotal))
     };
 

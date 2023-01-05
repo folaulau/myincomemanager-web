@@ -31,7 +31,7 @@ function SignUpExpenses() {
         ExpenseGraphQL.getExpenses()
         .then((response) => {
             // console.log("response: ", response);
-            let savedExpenses = response.data.data.expenses
+            let savedExpenses = response?.data?.data?.expenses
             console.log("savedExpenses: ", savedExpenses);
 
             if(savedExpenses.length > 0){
