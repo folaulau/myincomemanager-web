@@ -99,7 +99,7 @@ function Dashboard() {
       <Header />
         <div className="container">
           <div className="row">
-            <div className="col-md-4 offset-md-4">
+            <div className="col-md-10 offset-md-1">
             <h2>Dashboard</h2>
             
             {errorMsg && 
@@ -113,62 +113,110 @@ function Dashboard() {
             }
 
             <div className="row">
-              <div className="col-12">
-              <div className="mb-3">
-                <label  className="form-label">Email Address</label>
-                <input 
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                value={userInfo.email}
-                onChange={handleInputChange}
-                required
-                className="form-control" 
-                placeholder="johndoe@gmail.com"/>
+              <div className="col-sm-4 col-12">
+                Life: $2300
               </div>
+              <div className="col-sm-4 col-12">
+                Status: used $1200, 45%
+              </div>
+            </div>
+            <h4>Monthly Income</h4>
+            <div className="row">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Anvilogic
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $10000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Datappraise
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $7000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Others
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $2000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Total
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $19000
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h4>Monthly Expenses</h4>
+            <div className="row">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Subscriptions
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $10000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Food + Others
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $7000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Total
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $17000
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h4>Monthly Savings</h4>
+            <div className="row">
+              <div className="col-12">
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Car
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $10000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Christmas
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $7000
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-sm-4 col-12">
+                    Total
+                  </div>
+                  <div className="col-sm-4 col-12">
+                    $17000
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="row">
-              <div className="col-12">
-              <div className="mb-3">
-                <label  className="form-label">Password</label>
-                <input
-                id="password"
-                name="password"
-                type="password"
-                value={userInfo.password}
-                onChange={handleInputChange}
-                required
-                className="form-control"
-                />
-              </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-12">
-              <div className="mb-3">
-                <label  className="form-label">Confirm Password</label>
-                <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={userInfo.confirmPassword}
-                onChange={handleInputChange}
-                required
-                className="form-control"/>
-              </div>
-              </div>
-            </div>
 
-            <div className="row">
-              <div className="col-12">
-              <div className="d-grid gap-2">
-                <button onClick={()=>signUpWithEmailAndPassword()} type="button" className="btn btn-primary">Sign Up</button>
-              </div>
-              </div>
-            </div>
 
             </div>
           </div>

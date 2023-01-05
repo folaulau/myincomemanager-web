@@ -36,7 +36,7 @@ function Header() {
 
                     <Link to="/pricing" className="me-3 py-2 text-dark text-decoration-none">Pricing</Link>
                     
-                    <Link to="/how-it-works" className="me-3 py-2 text-dark text-decoration-none">How it works</Link>
+                    <Link to="/transactions" className="me-3 py-2 text-dark text-decoration-none">Transactions</Link>
 
                     <span onClick={()=>signOut()} className="me-3 py-2 text-dark text-decoration-none signOutLnk">Sign Out</span>
 
