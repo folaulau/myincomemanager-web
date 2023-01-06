@@ -23,6 +23,13 @@ const TransactionGraphQL = {
                     datetime
                     updatedAt: updated_at
                     createdAt: created_at
+                },
+                transactions_aggregate {
+                    aggregate {
+                        sum {
+                            total
+                        }
+                    }
                 }
             }             
         `;

@@ -146,7 +146,7 @@ function SignUpProfile() {
                                     autoComplete="email"
                                     value={user.email}
                                     onChange={handleUserInputChange}
-                                    required
+                                    readOnly
                                     className="form-control" 
                                     placeholder="johndoe@gmail.com"/>
                                 </div>
